@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
+import Homepage from "./Homepage";
+
 
 
 export default class App extends Component {
@@ -10,11 +12,11 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        <h1>aaaasdasa</h1>
+        <Homepage/>
       </div>
     );
   }
 }
 
 const appDiv = document.getElementById("app");
-render(<App />, appDiv);
+render(<App name="lucas"/>, appDiv);
