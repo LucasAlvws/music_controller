@@ -38,6 +38,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
       .then((response) => response.json())
       .then((data) => navigate("/room/" + data.code));
   };
+  
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} align="center">

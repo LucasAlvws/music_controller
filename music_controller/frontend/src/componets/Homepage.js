@@ -11,14 +11,17 @@ export default class Homepage extends Component {
   
     render() {
       return (
-        <Router>
+        <div>
+          <Router>
             <Routes>
                 <Route exact path="/" element={<p>This Is the Homepage</p>} />
                 <Route path="/join" element={<RoomJoinPage />} />
                 <Route path="/create" element={<CreateRoomPage />} />
                 <Route path="/room/:roomCode" element={<Room />} />
             </Routes>
-        </Router>
+          </Router>
+        </div>
+        
       );
     }
     
