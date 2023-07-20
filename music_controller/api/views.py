@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics , status
 from .models import Room
-from .serializers import RoomSerializer, CreateRoomSerializer
+from .serializers import RoomSerializer, CreateRoomSerializer, UpdateRoomSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
@@ -98,3 +98,26 @@ class LeaveRoomView(APIView):
                 room = room_result[0]
                 room.delete()
         return Response({"Message" : "Success"}, status=status.HTTP_200_OK)
+    
+class UpdateView(APIView):
+    serializer_class = UpdateRoomSerializer
+    def pacth(self, request, format=None):
+        if not self.request.session.exists(self.request.session.session_key):
+            self.request.session.create()
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            guest_can_pause = serializer.data.get('guest_can_pause')
+            votes_to_skip = serializer.data.get('votes_to_skip')
+            code = serializer.data.get('code')
+            result_room = Room.objects.filter(code=code)
+            if not result_room.exists():
+                return Response({'Room not found': 'invalid room...'}, status=status.HTTP_404_NOT_FOUND)
+            room = result_room[0]
+            user_id = self.request.session.session_key
+            if user_id != room.host:
+                return Response({'msg': 'You are note the host room...'}, status=status.HTTP_403_FORBIDDEN)
+            room.guest_can_pause = guest_can_pause
+            room.votes_to_skip = votes_to_skip
+            room.save(update_fields=['guest_can_pause', 'votes_to_skip'])
+            return Response(RoomSerializer(room).data, status=status.HTTP_200_OK)
+        return Response({"Bad request":"Invalid data...."}, status=status.HTTP_400_BAD_REQUEST)
